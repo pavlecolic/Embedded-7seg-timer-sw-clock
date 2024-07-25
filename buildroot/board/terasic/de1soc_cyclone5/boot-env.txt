@@ -1,0 +1,19 @@
+linux_load_address=0x01000000
+linux_dtb_load_address=0x02000000
+fpgadata=0x03000000
+linux_dtb=socfpga_cyclone5_de1_soc.dtb
+fpgaintf=ffd08028
+fpgaintf_handoff=0x00000000
+fpga2sdram=ffc25080
+fpga2sdram_handoff=0x00000000
+fpga2sdram_apply=3ff795a4
+axibridge=ffd0501c
+axibridge_handoff=0x00000000
+l3remap=ff800000
+l3remap_handoff=0x00000019
+bridge_enable_handoff=mw $fpgaintf $fpgaintf_handoff; mw $axibridge $axibridge_handoff; mw $l3remap $l3remap_handoff
+fpga_load=mmc rescan; fatload mmc 0:1 $fpgadata socfpga.rbf; fpga load 0 $fpgadata $filesize
+linux_load=mmc rescan; fatload mmc 0:1 ${linux_load_address} zImage; fatload mmc 0:1 ${linux_dtb_load_address} ${linux_dtb}
+bootargs=console=ttyS0,115200 root=/dev/mmcblk0p3 rw rootwait
+bootcmd=run fpga_load; run bridge_enable_handoff; run linux_load; bootz ${linux_load_address} - ${linux_dtb_load_address}
+bootdelay=1

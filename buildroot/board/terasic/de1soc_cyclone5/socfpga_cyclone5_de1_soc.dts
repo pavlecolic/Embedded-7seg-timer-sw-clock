@@ -1,0 +1,232 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * Copyright (C) 2013 Steffen Trumtrar <s.trumtrar@pengutronix.de>
+ */
+
+#include "socfpga_cyclone5.dtsi"
+
+/ {
+	model = "Terasic DE1-SoC";
+	compatible = "terasic,socfpga-cyclone5-sockit", "altr,socfpga-cyclone5", "altr,socfpga";
+
+	chosen {
+		bootargs = "earlyprintk";
+		stdout-path = "serial0:115200n8";
+	};
+
+	memory@0 {
+		name = "memory";
+		device_type = "memory";
+		reg = <0x0 0x40000000>; /* 1GB */
+	};
+
+	aliases {
+		/* this allow the ethaddr uboot environmnet variable contents
+		 * to be added to the gmac1 device tree blob.
+		 */
+		ethernet0 = &gmac1;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		hps_led {
+			label = "hps_led";
+			gpios = <&portb 24 0>;	/* HPS_GPIO53 */
+			linux,default-trigger = "heartbeat";
+		};
+	};
+
+	gpio-keys {
+		compatible = "gpio-keys";
+
+		hps_key {
+			label = "hps_key";
+			gpios = <&portb 25 0>;	/* HPS_GPI8 */
+			linux,code = <16>;	/* KEY_F17 */
+		};
+	};
+
+	gpio-keys-polled {
+		compatible = "gpio-keys-polled";
+		poll-interval = <10>;
+
+		key0 {
+			label = "key0";
+			gpios = <&buttons 0 0>;	
+			linux,code = <17>;	
+		};
+		
+		key1 {
+			label = "key1";
+			gpios = <&buttons 1 0>;	
+			linux,code = <18>;	
+		};
+		
+		key2 {
+			label = "key2";
+			gpios = <&buttons 2 0>;
+			linux,code = <19>;
+		};
+		
+		key3 {
+			label = "key3";
+			gpios = <&buttons 3 0>;	
+			linux,code = <20>;
+		};
+
+		sw0 {
+			label = "sw0";
+			gpios = <&switches 0 0>;	
+			linux,code = <30>;
+		};
+
+		sw1 {
+			label = "sw1";
+			gpios = <&switches 1 0>;	
+			linux,code = <31>;
+		};
+	};
+	
+
+	hex0: gpio@ff200060 {
+		compatible = "altr,pio-1.0";
+		reg = <0xff200060 0x10>;
+		altr,ngpio = <7>;
+		#gpio-cells = <2>;
+		gpio-controller;
+	};
+	
+	hex1: gpio@ff200050 {
+		compatible = "altr,pio-1.0";
+		reg = <0xff200050 0x10>;
+		altr,ngpio = <7>;
+		#gpio-cells = <2>;
+		gpio-controller;
+	};
+	
+	hex2: gpio@ff200040 {
+		compatible = "altr,pio-1.0";
+		reg = <0xff200040 0x10>;
+		altr,ngpio = <7>;
+		#gpio-cells = <2>;
+		gpio-controller;
+	};
+	
+	hex3: gpio@ff200030 {
+		compatible = "altr,pio-1.0";
+		reg = <0xff200030 0x10>;
+		altr,ngpio = <7>;
+		#gpio-cells = <2>;
+		gpio-controller;
+	};
+	
+	hex4: gpio@ff200020 {
+		compatible = "altr,pio-1.0";
+		reg = <0xff200020 0x10>;
+		altr,ngpio = <7>;
+		#gpio-cells = <2>;
+		gpio-controller;
+	};
+	
+	hex5: gpio@ff200010 {
+		compatible = "altr,pio-1.0";
+		reg = <0xff200010 0x10>;
+		altr,ngpio = <7>;
+		#gpio-cells = <2>;
+		gpio-controller;
+	};
+	
+	buttons: gpio@ff200090 {
+		compatible = "altr,pio-1.0";
+		reg = <0xff200090 0x10>;
+		altr,ngpio = <4>;
+		#gpio-cells = <2>;
+		gpio-controller;
+	};
+
+	switches: gpio@ff200080 {
+		compatible = "altr,pio-1.0";
+		reg = <0xff200080 0x10>;
+		altr,ngpio = <10>;
+		#gpio-cells = <2>;
+		gpio-controller;
+	};
+
+	regulator_3_3v: regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "VCC3P3";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+	};
+};
+
+&gmac1 {
+	status = "okay";
+	phy-mode = "rgmii";
+
+	rxd0-skew-ps = <0>;
+	rxd1-skew-ps = <0>;
+	rxd2-skew-ps = <0>;
+	rxd3-skew-ps = <0>;
+	txen-skew-ps = <0>;
+	txc-skew-ps = <2600>;
+	rxdv-skew-ps = <0>;
+	rxc-skew-ps = <2000>;
+};
+
+&gpio0 {	/* GPIO 0..29 */
+	status = "okay";
+};
+
+&gpio1 {	/* GPIO 30..57 */
+	status = "okay";
+};
+
+&gpio2 {	/* GPIO 58..66 (HLGPI 0..13 at offset 13) */
+	status = "okay";
+};
+
+&i2c0 {
+	status = "okay";
+	clock-frequency = <100000>;
+
+	accel1: accelerometer@53 {
+		compatible = "adi,adxl345";
+		reg = <0x53>;
+
+		interrupt-parent = <&portc>;
+		interrupts = <3 2>;
+	};
+};
+
+&mmc0 {
+	vmmc-supply = <&regulator_3_3v>;
+	vqmmc-supply = <&regulator_3_3v>;
+	status = "okay";
+};
+
+&qspi {
+	status = "okay";
+
+	flash: flash@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "micron,mt25qu02g", "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <100000000>;
+
+		m25p,fast-read;
+		cdns,page-size = <256>;
+		cdns,block-size = <16>;
+		cdns,read-delay = <4>;
+		cdns,tshsl-ns = <50>;
+		cdns,tsd2d-ns = <50>;
+		cdns,tchsh-ns = <4>;
+		cdns,tslch-ns = <4>;
+	};
+};
+
+&usb1 {
+	status = "okay";
+};
