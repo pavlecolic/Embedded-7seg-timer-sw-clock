@@ -16,5 +16,5 @@ Ovdje je ukratko opisana struktura foldera u repozitorijumu, a u nastavku će sv
 - u folderu *buildroot* nalaze se fajlovi relevantni za Buildroot okruženje, kao što su konfiguracioni fajlovi, device tree fajl, patch fajl.
 - u folderu *scripts* nalaze se korisne skripte koje nam olakšavaju podešavanje okruženja 
 ## Tesitranje rada 7-segmentnog displeja
-Displej koji se koristi dostupan je na ploči, te nam nisu potrebne dodatne hardverske komponente. Potrebno je modifikovati dts fajl kako bi ploča mogla prepoznati displej, a modifikacija se vrši u skladu sa adresama specifikovanim  u soc_system.html fajlu. Device tree koji modifikujemo možete pogledati (ovdje)[https://github.com/etf-unibl/urs-2024/blob/lab-07-11106/19-2024/lab-07/socfpga_cyclone5_de1_soc.dts]. 
+Displej koji se koristi dostupan je na ploči, te nam nisu potrebne dodatne hardverske komponente. Potrebno je modifikovati dts fajl kako bi ploča mogla prepoznati displej, a modifikacija se vrši u skladu sa adresama specifikovanim  u soc_system.html fajlu. Device tree koji modifikujemo možete pogledati [ovdje](https://github.com/etf-unibl/urs-2024/blob/lab-07-11106/19-2024/lab-07/socfpga_cyclone5_de1_soc.dts). 
 ## 
