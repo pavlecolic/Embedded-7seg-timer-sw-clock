@@ -123,6 +123,15 @@ struct input_event {
 ```
 Poređenjem vrijednosti *code* atributa iz strukture sa vrijednostima specifikovanim u devie tree fajlu zaključujemo koji taster je pritisnut te vršimo promjenu stanja u skladu s tim.  
 Kompletan izvorni kod sa komentarima nalazi se u folderu code u repozitorijumu.
+Izvorni kod potrebno je kroskompajlirati za ciljanu platformu korišćenjem ranije generisanog toolcahina-a, sljedećom komandom:
+```
+arm-linux-gcc 7seg.c -o 7seg
+```
+> **Note:** Prije izvršavanja komande potrebno je izvršiti skriptu set-environment.sh (folder scripts) za otvoreni terminal.
+> ```
+> source .set-environment.sh
+
+Nakon toga, možemo kopirati izvršni fajl na particiju 2 koja sadrži *root* fajl sistem. 
 ## Demonstracija rada
 Na sljedećoj slici prikazani su tasteri od interesa na ploči, kao i 7segmentni displej. Tasteri su numerisani zdesna nalijevo kao: KEY0, KEY1, KEY2, KEY3, SW0 i SW1.
 
