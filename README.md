@@ -112,7 +112,7 @@ struct input_event {
 	unsigned int value;
 };
 ```
-Potrebno je da znamo *code* vrijednosti koje smo dodijelili tasterima u *device tree*.
+Poređenjem vrijednosti *code* atributa iz strukture sa vrijednostima specifikovanim u devie tree fajlu zaključujemo koji taster je pritisnut te vršimo promjenu stanja u skladu s tim.
 ## Demonstracija rada
 Na sljedećoj slici prikazani su tasteri od interesa na ploči, kao i 7segmentni displej. Tasteri su numerisani zdesna nalijevo kao: KEY0, KEY1, KEY2, KEY3, SW0 i SW1.
 
