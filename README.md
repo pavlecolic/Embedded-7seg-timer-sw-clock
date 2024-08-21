@@ -116,8 +116,8 @@ Poređenjem vrijednosti *code* atributa iz strukture sa vrijednostima specifikov
 ## Demonstracija rada
 Na sljedećoj slici prikazani su tasteri od interesa na ploči, kao i 7segmentni displej. Tasteri su numerisani zdesna nalijevo kao: KEY0, KEY1, KEY2, KEY3, SW0 i SW1.
 
- ![gk8e7SMI](https://github.com/user-attachments/assets/6e7ae3b2-5ac2-4148-908d-f5840560da75).
- Stanja:
+ ![gk8e7SMI](https://github.com/user-attachments/assets/6e7ae3b2-5ac2-4148-908d-f5840560da75)  
+Stanja:
 1. SW1=OFF && SW2=OFF -> OFF  
 2. SW1=ON && SW2=OFF -> STOPWATCH  
 	2.1. KEY0 pressed -> PAUSE/CONTINUE  
