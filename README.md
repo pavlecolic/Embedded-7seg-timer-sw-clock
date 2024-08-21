@@ -391,5 +391,17 @@ Koristimo *itimerval* strukturu koja nam omogućava da generišemo periodične s
 ## Demonstracija rada
 Na sljedećoj slici prikazani su tasteri od interesa na ploči, kao i 7segmentni displej. Tasteri su numerisani zdesna nalijevo kao: KEY0, KEY1, KEY2, KEY3, SW0 i SW1.
 
- ![gk8e7SMI](https://github.com/user-attachments/assets/6e7ae3b2-5ac2-4148-908d-f5840560da75)
+ ![gk8e7SMI](https://github.com/user-attachments/assets/6e7ae3b2-5ac2-4148-908d-f5840560da75).
+ Stanja:
+ 1. SW1=OFF && SW2=OFF -> OFF
+ 2. SW1=ON && SW2=OFF -> STOPWATCH
+    2.1 KEY0 pressed -> PAUSE/CONTINUE
+    2.2 KEY1 pressed -> RESET
+3. SW1=OFF && SW3=ON -> CLOCK
+4. SW1=ON && SW2=ON -> TIMER
+   4.1 KEY0 -> PAUSE/CONTINUE   
+   4.2 KEY1 -> increment seconds
+   4.3 KEY2 -> increment minutes
+   4.4 KEY3 -> increment hours
+   (inkrementi rade samo kada je tajmer pauziran)
 
