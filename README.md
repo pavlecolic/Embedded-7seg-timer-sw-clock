@@ -28,12 +28,57 @@ hex0: gpio@ff200060 {
 	};
  ```
 Širina od 7 bita nam omogućava da kontorlišemo svaki segment. Naravno, prije testiranja potrebno je uvjeriti se da je u konfiguraciji kernela omogućena podrška za GPIO tastere (Device Drivers→Input device support→Keyboards→GPIO Buttons). Sada je moguće upaliti/ugasiti određene segmente na displejima kroz programski kod, ili testirati rad segmenata izmjenom *leds* čvora u device tree
-'''
+```
 hex0_a {
 			label = "hex0_a";
 			gpios = <&hex0 0 0>;	
 			linux,default-trigger = "none";
 	};
- '''
+ ```
  , nakon čega možemo da testiramo displej upisom odgovarajućih vrijednosti u *brightness* fajl. Atribut gpios definiše port na kom se nalazi led dioda (npr. hex0), kao i broj pina na datom portu.
+ ## Rad sa dugmićima i svičevima
+ Rad sa dugmićima i svičevima ćemo omogućiti pomoću polling mehanizma. Za razliku od interrupt-driven pristupa, kod pollinga se periodično provjerava stanje uređaja. Potrebno je omogućiti opciju Device Drivers→Input device support→Keyboards→Polled GPIO Buttons. Atribut poll-interval predstavlja interval provjere stanja uređaja u milisekundama. Omogućićemo četiri dugmića, a za promjenu režima rada dovoljna su nam dva sviča (4 moguća stanja).
+ ‚‚‚
+ 	gpio-keys-polled {
+		compatible = "gpio-keys-polled";
+		poll-interval = <10>;
+
+		key0 {
+			label = "key0";
+			gpios = <&buttons 0 0>;	
+			linux,code = <17>;	
+		};
+		
+		key1 {
+			label = "key1";
+			gpios = <&buttons 1 0>;	
+			linux,code = <18>;	
+		};
+		
+		key2 {
+			label = "key2";
+			gpios = <&buttons 2 0>;
+			linux,code = <19>;
+		};
+		
+		key3 {
+			label = "key3";
+			gpios = <&buttons 3 0>;	
+			linux,code = <20>;
+		};
+
+		sw0 {
+			label = "sw0";
+			gpios = <&switches 0 0>;	
+			linux,code = <30>;
+		};
+
+		sw1 {
+			label = "sw1";
+			gpios = <&switches 1 0>;	
+			linux,code = <31>;
+		};
+	};
+ ‚‚‚
+Kompajliranjem dts fajla komandom *make dtbs* dobićemo socfpga_cyclone5_de1_soc.dtb fajl koji je potrebno prebaciti na FAT32 particiju na kartici.
  
