@@ -133,8 +133,12 @@ arm-linux-gcc 7seg.c -o 7seg
 
 Nakon toga, možemo kopirati izvršni fajl na particiju 2 koja sadrži *root* fajl sistem. 
 ## Demonstracija rada
+Povezaćemo ploču sa razvojnim računarom i izvršiti komandu:
+```
+sudo picocom -b 115200 /dev/ttyUSB0
+```
 Na sljedećoj slici prikazani su tasteri od interesa na ploči, kao i 7segmentni displej. Tasteri su numerisani zdesna nalijevo kao: KEY0, KEY1, KEY2, KEY3, SW0 i SW1.
-
+Možemo da se pozicioniramo u direktorijum gdje smo smjestili izvršni fajl i pokrenuti našu aplikaciju.
  ![gk8e7SMI](https://github.com/user-attachments/assets/6e7ae3b2-5ac2-4148-908d-f5840560da75)  
 Stanja:
 1. SW1=OFF && SW2=OFF -> OFF  
