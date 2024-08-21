@@ -28,7 +28,7 @@ hex0: gpio@ff200060 {
 		gpio-controller;
 	};
  ```
-Širina od 7 bita za svaki displej nam omogućava da kontorlišemo segmente. Prije testiranja potrebno je uvjeriti se da je u konfiguraciji kernela omogućena podrška za GPIO tastere:
+Širina od 7 bita za svaki displej nam omogućava da kontorlišemo segmente. Prije testiranja potrebno je uvjeriti se da je u konfiguraciji kernela omogućena podrška za GPIO tastere:  
 	*Device Drivers→Input device support→Keyboards→GPIO Buttons*
 Sada je moguće upaliti/ugasiti određene segmente na displejima kroz programski kod, ili testirati rad segmenata izmjenom *leds* čvora u device tree dodavanjem sljedećeg podčvora:
 ```
@@ -40,7 +40,7 @@ hex0_a {
  ```
  Nakon ove izmjene možemo da testiramo displej upisom vrijednosti 0 i 1 u odgovarajući *brightness* fajl. Atribut gpios definiše port na kom se nalazi led dioda, kao i broj pina na datom portu.
  ## Rad sa dugmićima i svičevima
- Rad sa dugmićima i svičevima ćemo omogućiti pomoću polling mehanizma. Za razliku od interrupt-driven pristupa, kod pollinga se periodično provjerava stanje uređaja. Potrebno je omogućiti opciju:
+ Rad sa dugmićima i svičevima ćemo omogućiti pomoću polling mehanizma. Za razliku od interrupt-driven pristupa, kod pollinga se periodično provjerava stanje uređaja. Potrebno je omogućiti opciju:  
  	*Device Drivers→Input device support→Keyboards→Polled GPIO Buttons*
  Atribut *poll-interval* predstavlja interval provjere stanja uređaja u milisekundama. Imamo četiri dugmića, a za promjenu režima rada dovoljna su nam dva sviča za četiri moguća stanja (off, stopwatch, clock, timer).
  ```
