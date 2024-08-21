@@ -17,7 +17,12 @@ Ovdje je ukratko opisana struktura foldera u repozitorijumu, a u nastavku će sv
 - u folderu *buildroot* nalaze se fajlovi relevantni za Buildroot okruženje, kao što su konfiguracioni fajlovi, device tree fajl, patch fajl.
 - u folderu *scripts* nalaze se korisne skripte koje nam olakšavaju podešavanje okruženja 
 ## Tesitranje rada 7-segmentnog displeja
-Displej koji se koristi dostupan je na ploči, te nam nisu potrebne dodatne hardverske komponente. Potrebno je modifikovati dts fajl kako bi ploča mogla prepoznati displej, a modifikacija se vrši u skladu sa adresama specifikovanim  u soc_system.html fajlu. Polazni device tree koji modifikujemo možete pogledati [ovdje](https://github.com/etf-unibl/urs-2024/blob/lab-07-11106/19-2024/lab-07/socfpga_cyclone5_de1_soc.dts). 
+Prije svega, potrebno je da kopiramo i .rbf fajl na FAT32 particiju, ako i da izimijenimo boot-env.txt fajl u buildroot folderu kopiranjem sadržaja boot-env.txt fajla sa repozitorijuma. Takođe, potrebno je dodati patch fajl u buildroot/board/terasic/de1soc_cyclone5 folder i navesti putanju (board/terasic/de1soc_cyclone5/de1-soc-handoff.patch) za opciju:
+	*Bootloaders->Custom U-Boot Patches*
+kod konfiguracije buildroot-a.  
+Displej koji se koristi dostupan je na ploči, te nam nisu potrebne dodatne hardverske komponente. Potrebno je modifikovati dts fajl kako bi ploča mogla prepoznati displej, a modifikacija se vrši u skladu sa adresama specifikovanim  u *soc_system.html* fajlu. Polazni device tree koji modifikujemo možete pogledati [ovdje](https://github.com/etf-unibl/urs-2024/blob/lab-07-11106/19-2024/lab-07/socfpga_cyclone5_de1_soc.dts). 
+Putanja fajla od interesa je: linux-socfpga/arch/arm/boot/dts/socfpga_cyclone5_de1_soc.dts  
+Ukoliko fajl ne postoji potrebno ga je kreirati.
 Dodajemo [GPIO binding](https://github.com/altera-opensource/linux-socfpga/blob/socfpga-6.1.20-lts/Documentation/devicetree/bindings/gpio/gpio-altera.txt) za svaki 7-segmentni displej u dts fajl. Kako imamo dostupno šest 7segmentnih displeja, imaćemo ukupno šest čvorova. Primjer kontrolera za jedan displej:
 ```
 hex0: gpio@ff200060 {
@@ -31,7 +36,12 @@ hex0: gpio@ff200060 {
 Širina od 7 bita za svaki displej nam omogućava da kontorlišemo segmente. Prije testiranja potrebno je uvjeriti se da je u konfiguraciji kernela omogućena podrška za GPIO tastere:  
   
 &nbsp;&nbsp;&nbsp;&nbsp;*Device Drivers→Input device support→Keyboards→GPIO Buttons*  
-  
+
+Pozicionidamo se u linux-socfpga folder i pokrenemo sljedeću komandu za kompajliranje *device tree-a*:
+```
+make dtbs
+```
+Ova komanda će da kreira .dtb fajl istog naziva koji je potrebno kopirati na FAT32 particiju.
 Sada je moguće upaliti/ugasiti određene segmente na displejima kroz programski kod, ili testirati rad segmenata izmjenom *leds* čvora u device tree dodavanjem sljedećeg podčvora:
 ```
 hex0_a {
@@ -40,7 +50,8 @@ hex0_a {
 			linux,default-trigger = "none";
 	};
  ```
- Nakon ove izmjene možemo da testiramo displej upisom vrijednosti 0 i 1 u odgovarajući *brightness* fajl. Atribut gpios definiše port na kom se nalazi led dioda, kao i broj pina na datom portu.
+
+ Nakon ove izmjene i ponovnog kompajliranja možemo da testiramo displej upisom vrijednosti 0 i 1 u odgovarajući *brightness* fajl. Atribut gpios definiše port na kom se nalazi led dioda, kao i broj pina na datom portu.
  ## Rad sa dugmićima i svičevima
  Rad sa dugmićima i svičevima ćemo omogućiti pomoću polling mehanizma. Za razliku od interrupt-driven pristupa, kod pollinga se periodično provjerava stanje uređaja. Potrebno je omogućiti opciju:  
    
@@ -99,9 +110,7 @@ Event: time 1706154740.224967, type 1 (EV_KEY), code 17 (KEY_W), value 1
 Event: time 1706154740.224967, -------------- SYN_REPORT ------------
 ```
 ## Realizacija aplikacije
-Sada kada smo konfigurisali device tree, potrebno je da kopiramo i .rbf fajl na FAT32 particiju, ako i da izimijenimo boot-env.txt fajl u buildroot folderu kopiranjem sadržaja boot-env.txt fajla sa repozitorijuma. Takođe, potrebno je dodati patch fajl u buildroot/board/terasic/de1soc_cyclone5 folder i navesti putanju (board/terasic/de1soc_cyclone5/de1-soc-handoff.patch) za opciju:
-	*Bootloaders->Custom U-Boot Patches*
-kod konfiguracije buildroot-a.  
+Sada kada smo konfigurisali device tree možemo da realizujemo našu aplikaciju.
 Koristimo *itimerval* strukturu koja nam omogućava da generišemo periodične signale, te vršimo poziv funkcije timer_handle periodično. Navedena funkcija je zadužena za prikaz brojnih vrijednosti na displejima, u zavisnosti od režima rada i trenutnih vrijednosti. Funkcija handle_event se poziva kada je detektovan događaj (pritisak na neki od tastera), a služi za obradu generisanog događaja.
 Funkciji prosljeđujemo input_event strukturu koja nam daje potrebne informacije o događaju.
 ```
