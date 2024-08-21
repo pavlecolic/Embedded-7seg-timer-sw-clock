@@ -28,7 +28,7 @@ hex0: gpio@ff200060 {
 		gpio-controller;
 	};
  ```
-Širina od 7 bita nam omogućava da kontorlišemo svaki segment. Naravno, prije testiranja potrebno je uvjeriti se da je u konfiguraciji kernela omogućena podrška za GPIO tastere (Device Drivers→Input device support→Keyboards→GPIO Buttons). Sada je moguće upaliti/ugasiti određene segmente na displejima kroz programski kod, ili testirati rad segmenata izmjenom *leds* čvora u device tree
+Širina od 7 bita nam omogućava da kontorlišemo svaki segment. Naravno, prije testiranja potrebno je uvjeriti se da je u konfiguraciji kernela omogućena podrška za GPIO tastere (Device Drivers→Input device support→Keyboards→GPIO Buttons). Sada je moguće upaliti/ugasiti određene segmente na displejima kroz programski kod, ili testirati rad segmenata izmjenom *leds* čvora u device tree dodavanjem sljedećeg podčvora:
 ```
 hex0_a {
 			label = "hex0_a";
@@ -81,7 +81,7 @@ hex0_a {
 		};
 	};
  ```
-Svakom tasteru dodijeljen je određeni [kod](https://github.com/torvalds/linux/blob/master/include/uapi/linux/input-event-codes.h).  Kompajliranjem dts fajla komandom *make dtbs* dobićemo socfpga_cyclone5_de1_soc.dtb fajl koji je potrebno prebaciti na FAT32 particiju na kartici. Komandom evtest možemo da vidimo kreirani event fajl, te da testiramo rad naših tastera uz informacije o vremenu, stanju i kodu. Detaljnije informaicje možete pronaći na [ovom linku](https://www.kernel.org/doc/Documentation/input/input.txt) u sekciji 5 Event Interface. Strukturu *input_event* ćemo koristiti pri implementaciji aplikacije za dobijanje informacija o pritisnutom tasteru.
+Svakom tasteru dodijeljen je određeni [kod](https://github.com/torvalds/linux/blob/master/include/uapi/linux/input-event-codes.h).  Kompajliranjem dts fajla komandom *make dtbs* dobićemo socfpga_cyclone5_de1_soc.dtb fajl koji je potrebno prebaciti na FAT32 particiju na kartici. Komandom evtest možemo da vidimo kreirani event fajl, te da testiramo rad naših tastera uz informacije o vremenu, stanju i kodu. Detaljnije informacije možete pronaći na [ovom linku](https://www.kernel.org/doc/Documentation/input/input.txt) u sekciji 5 Event Interface. Strukturu *input_event* ćemo koristiti pri implementaciji aplikacije za dobijanje informacija o pritisnutom tasteru.
 ```
 # Testiranje pomoću evtest alata
 # Pritisak na taster KEY0 (dodijeljen mu je code 17, koji odgovara slovu W)
@@ -387,6 +387,9 @@ int main() {
     return 0;
 }
 ```
+Koristimo *itimerval* strukturu koja nam omogućava da generišemo periodične signale, te vršimo poziv funkcije timer_handle periodično. Navedena funkcija je zadužena za prikaz brojnih vrijednosti na displejima, u zavisnosti od režima rada. Funkcija handle_event se poziva kada je detektovan događaj (pritisak na neki od tastera), a služi za obradu generisanog događaja.
+## Demonstracija rada
+Na sljedećoj slici prikazani su tasteri od interesa na ploči, kao i 7segmentni displej. Tasteri su numerisani zdesna nalijevo kao: KEY0, KEY1, KEY2, KEY3, SW0 i SW1.
 
+ ![gk8e7SMI](https://github.com/user-attachments/assets/6e7ae3b2-5ac2-4148-908d-f5840560da75)
 
- 
