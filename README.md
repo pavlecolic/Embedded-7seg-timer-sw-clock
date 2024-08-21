@@ -18,7 +18,7 @@ Ovdje je ukratko opisana struktura foldera u repozitorijumu, a u nastavku će sv
 ## Tesitranje rada 7-segmentnog displeja
 Displej koji se koristi dostupan je na ploči, te nam nisu potrebne dodatne hardverske komponente. Potrebno je modifikovati dts fajl kako bi ploča mogla prepoznati displej, a modifikacija se vrši u skladu sa adresama specifikovanim  u soc_system.html fajlu. Polazni device tree koji modifikujemo možete pogledati [ovdje](https://github.com/etf-unibl/urs-2024/blob/lab-07-11106/19-2024/lab-07/socfpga_cyclone5_de1_soc.dts). 
 Dodajemo [GPIO binding](https://github.com/altera-opensource/linux-socfpga/blob/socfpga-6.1.20-lts/Documentation/devicetree/bindings/gpio/gpio-altera.txt) za svaki 7-segmentni displej u dts fajl, ukupno šest čvorova. Primjer kontrolera za hex0 displej:
-'''
+```
 hex0: gpio@ff200060 {
 		compatible = "altr,pio-1.0";
 		reg = <0xff200060 0x10>;
@@ -26,7 +26,7 @@ hex0: gpio@ff200060 {
 		#gpio-cells = <2>;
 		gpio-controller;
 	};
- '''
+ ```
 Širina od 7 bita nam omogućava da kontorlišemo svaki segment. Naravno, prije testiranja potrebno je uvjeriti se da je u konfiguraciji kernela omogućena podrška za GPIO tastere (Device Drivers→Input device support→Keyboards→GPIO Buttons). Sada je moguće upaliti/ugasiti određene segmente na displejima kroz programski kod, ili testirati rad segmenata izmjenom *leds* čvora u device tree
 '''
 hex0_a {
