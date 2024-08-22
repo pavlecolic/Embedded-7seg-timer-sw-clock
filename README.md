@@ -53,10 +53,15 @@ hex0_a {
 
  Nakon ove izmjene i ponovnog kompajliranja možemo da testiramo displej upisom vrijednosti 0 i 1 u odgovarajući *brightness* fajl. Atribut gpios definiše port na kom se nalazi led dioda, kao i broj pina na datom portu.
  ## Rad sa dugmićima i svičevima
- Rad sa dugmićima i svičevima ćemo omogućiti pomoću polling mehanizma. Za razliku od interrupt-driven pristupa, kod pollinga se periodično provjerava stanje uređaja. Potrebno je omogućiti opciju:  
+ Rad sa dugmićima i svičevima ćemo omogućiti pomoću polling mehanizma. Za razliku od interrupt-driven pristupa, kod pollinga se periodično provjerava stanje uređaja. Nakon što se pozicioniramo u *buildroot* folder i izvršimo komandu:  
+ ```
+make linux-menuconfig
+```
+gdje je potrebno omogućiti opciju:  
    
 &nbsp;&nbsp;&nbsp;&nbsp;*Device Drivers→Input device support→Keyboards→Polled GPIO Buttons*  
-  
+
+, nakon čega je potrebno ponovo izvršiti *make*.  
 Atribut *poll-interval* predstavlja interval provjere stanja uređaja u milisekundama. Imamo četiri dugmića, a za promjenu režima rada dovoljna su nam dva sviča za četiri moguća stanja (off, stopwatch, clock, timer).
  ```
  	gpio-keys-polled {
@@ -103,7 +108,7 @@ Atribut *poll-interval* predstavlja interval provjere stanja uređaja u miliseku
 Svakom tasteru dodijeljen je određeni [kod](https://github.com/torvalds/linux/blob/master/include/uapi/linux/input-event-codes.h).  Kompajliranjem dts fajla komandom *make dtbs* dobićemo socfpga_cyclone5_de1_soc.dtb fajl koji je potrebno prebaciti na FAT32 particiju na kartici. Komandom evtest možemo da vidimo kreirani event fajl, te da testiramo rad naših tastera uz informacije o vremenu, stanju i kodu. Detaljnije informacije možete pronaći na [ovom linku](https://www.kernel.org/doc/Documentation/input/input.txt) u sekciji 5 Event Interface. Strukturu *input_event* ćemo koristiti pri implementaciji aplikacije za dobijanje informacija o pritisnutom tasteru.
 ```
 # Testiranje pomoću evtest alata
-# Pritisak na taster KEY0 (dodijeljen mu je code 17, koji odgovara slovu W)
+# Pritisak i puštanje tastera KEY0 (dodijeljen mu je code 17, koji odgovara slovu W)
 Event: time 1706154740.024961, type 1 (EV_KEY), code 17 (KEY_W), value 0
 Event: time 1706154740.024961, -------------- SYN_REPORT ------------
 Event: time 1706154740.224967, type 1 (EV_KEY), code 17 (KEY_W), value 1
@@ -137,8 +142,8 @@ Povezaćemo ploču sa razvojnim računarom i izvršiti komandu:
 ```
 sudo picocom -b 115200 /dev/ttyUSB0
 ```
-Na sljedećoj slici prikazani su tasteri od interesa na ploči, kao i 7segmentni displej. Tasteri su numerisani zdesna nalijevo kao: KEY0, KEY1, KEY2, KEY3, SW0 i SW1.
-Možemo da se pozicioniramo u direktorijum gdje smo smjestili izvršni fajl i pokrenuti našu aplikaciju.
+Nakon podizanja sistema možemo da se pozicioniramo u direktorijum gdje smo smjestili izvršni fajl i pokrenuti našu aplikaciju.
+Na sljedećoj slici prikazani su tasteri od interesa na ploči, kao i 7-segmentni displej. Tasteri su numerisani zdesna nalijevo kao: KEY0, KEY1, KEY2, KEY3, SW0 i SW1.
  ![gk8e7SMI](https://github.com/user-attachments/assets/6e7ae3b2-5ac2-4148-908d-f5840560da75)  
 Stanja:
 1. SW0=OFF && SW1=OFF -> OFF  
